@@ -2,22 +2,35 @@ import PropTypes from 'prop-types';
 import Task from './Task.jsx';
 import './TaskList.css';
 
-const TaskList = ({ tasks, onTaskClickCallback, onTaskDeleteCallback }) => {
-  const getTaskListJSX = (tasks) => {
-    return tasks.map((task) => {
-      return (
-        <Task
-          key={task.id}
-          id={task.id}
-          title={task.title}
-          isComplete={task.isComplete}
-          onClickCallback={onTaskClickCallback}
-          onDeleteCallback={onTaskDeleteCallback}
-        />
-      );
-    });
-  };
-  return <ul className="tasks__list no-bullet">{getTaskListJSX(tasks)}</ul>;
+const TaskList = ({ tasks, onTaskClick, onTaskDelete }) => {
+  // const getTaskListJSX = (tasks) => {
+  //   return tasks.map((task) => {
+  //     return (
+  //       <Task
+  //         key={task.id}
+  //         id={task.id}
+  //         title={task.title}
+  //         isComplete={task.isComplete}
+  //         onTaskToggle={onTaskClick}
+  //       />
+  //     );
+  //   });
+  // };
+  const taskComponents = tasks.map((task) => {
+    return (
+      <Task
+        key={task.id}
+        id={task.id}
+        title={task.title}
+        isComplete={task.isComplete}
+        onTaskToggle={onTaskClick}
+        onTaskDelete={onTaskDelete}
+      />
+    );
+  });
+
+  // return <ul className="tasks__list no-bullet">{getTaskListJSX(tasks)}</ul>;
+  return <ul className="tasks__list no-bullet">{taskComponents}</ul>;
 };
 
 TaskList.propTypes = {
@@ -28,8 +41,8 @@ TaskList.propTypes = {
       isComplete: PropTypes.bool.isRequired,
     })
   ).isRequired,
-  onTaskClickCallback: PropTypes.func.isRequired,
-  onTaskDeleteCallback: PropTypes.func.isRequired,
+  onTaskClick: PropTypes.func.isRequired,
+  onTaskDelete: PropTypes.func.isRequired,
 };
 
 export default TaskList;

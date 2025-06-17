@@ -16,20 +16,24 @@ const TASKS = [
 ];
 
 const App = () => {
-  const [tasks, setTasks] = useState(TASKS);
+  const [taskData, setTaskData] = useState(TASKS);
 
-  // Toggle complete handler
-  const toggleTaskComplete = (id) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, isComplete: !task.isComplete } : task
-      )
-    );
+  const toggleTaskComplete = (taskId) => {
+    setTaskData(tasks => {
+      return tasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, isComplete: !task.isComplete};
+        } else {
+          return task;
+        };
+      });
+    });
   };
 
-  // Delete task handler
-  const deleteTask = (id) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  const removeTask = (taskId) => {
+    setTaskData(tasks => {
+      return tasks.filter(task => task.id !== taskId);
+    });
   };
 
   return (
@@ -38,13 +42,7 @@ const App = () => {
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>
-          <TaskList
-            tasks={tasks}
-            onTaskClickCallback={toggleTaskComplete}
-            onTaskDeleteCallback={deleteTask}
-          />
-        </div>
+        <div>{<TaskList tasks={taskData} onTaskClick={toggleTaskComplete} onTaskDelete={removeTask}/>}</div>
       </main>
     </div>
   );
