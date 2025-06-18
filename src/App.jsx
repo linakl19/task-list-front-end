@@ -15,6 +15,16 @@ const getAllTasksApi = () => {
     });
 };
 
+const getSingleTaskApi = (taskId) => {
+  return axios.get(`${kBaseUrl}/tasks/${taskId}`)
+    .then(response => {
+      return convertFromApi(response.data.task);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 const markTaskCompleteApi = (taskId) => {
   return axios.patch(`${kBaseUrl}/tasks/${taskId}/mark_complete`)
     .then(response => {
@@ -43,8 +53,8 @@ const deleteTask = (taskId => {
 });
 
 const convertFromApi = (apiTask => {
-  const { id, title, description, is_complete } = apiTask;
-  const newTask = { id, title, description, isComplete: is_complete };
+  const { id, goal_id, title, description, is_complete } = apiTask;
+  const newTask = { id, goalId: goal_id, title, description, isComplete: is_complete };
 
   return newTask;
 });
@@ -59,49 +69,23 @@ const App = () => {
 
   useEffect(() => {
     getAllTasks();
-  }, [taskData]);
+  }, []);
 
-  const toggleTaskComplete = (taskId) => {
-    const singleTask = taskData.find(task => task.id === taskId);
-    const toggleCompletionStatus = singleTask.isComplete ? markTaskIncompleteApi : markTaskCompleteApi;
+  const toggleTaskComplete = taskId => {
+    return getSingleTaskApi(taskId)
+      .then(singleTask => {
+        const toggleCompletionStatus = singleTask.isComplete ? markTaskIncompleteApi : markTaskCompleteApi;
 
-    return toggleCompletionStatus(taskId)
-      .then(taskResult => {
-        setTaskData(taskData => taskData.map(task => {
-          console.log(taskData);
-          if (taskResult.id === taskId) {
-            task.isComplete = task.isComplete ? false : task.isComplete;
-            return taskResult;
-            // return { ...task, isComplete: !task.isComplete };
-          } else {
-            return task;
-          }
-        }));
+        return toggleCompletionStatus(taskId);
+      })
+      .then(() => {
+        return getAllTasks();
       })
       .catch(error => {
         console.log('Failed to toggle completion:', error);
       });
-    // ASK WHY isComplete IS NOT UPDATING AFTER THE API CALL
-
-    // setTaskData(tasks => {
-    //   return tasks.map((task) => {
-    //     if (task.id === taskId) {
-    //       if (task.isComplete) {
-    //         markTaskIncompleteApi(taskId);
-    //         return { ...task, isComplete: !task.isComplete };
-    //       }
-    //     } else {
-    //       return task;
-    //     };
-    //   });
-    // });
   };
 
-  // const removeTask = (taskId) => {
-  //   setTaskData(tasks => {
-  //     return tasks.filter(task => task.id !== taskId);
-  //   });
-  // };
   const removeTask = (taskId) => {
     return deleteTask(taskId)
       .then(() => {
