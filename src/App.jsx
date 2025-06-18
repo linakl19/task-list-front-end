@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import TaskList from './components/TaskList.jsx';
 import './App.css';
+import NewTaskForm from './components/NewTaskForm.jsx';
 
 const kBaseUrl = 'http://127.0.0.1:5000';
 
@@ -52,6 +53,16 @@ const deleteTask = (taskId => {
     });
 });
 
+const addTaskApi = (newTaskData) => {
+  return axios.post(`${kBaseUrl}/tasks`, newTaskData)
+    .then(response => {
+      return convertFromApi(response.data.task);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 const convertFromApi = (apiTask => {
   const { id, goal_id, title, description, is_complete } = apiTask;
   const newTask = { id, goalId: goal_id, title, description, isComplete: is_complete };
@@ -95,13 +106,23 @@ const App = () => {
       });
   };
 
+  const addTask = (newTaskData) => {
+    addTaskApi(newTaskData)
+      .then(newTask => {
+        setTaskData(prevTasks => [...prevTasks, newTask]);
+      });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>{<TaskList tasks={taskData} onTaskClick={toggleTaskComplete} onTaskDelete={removeTask} />}</div>
+        <div>
+          <TaskList tasks={taskData} onTaskClick={toggleTaskComplete} onTaskDelete={removeTask} />
+          <NewTaskForm onAddTask={addTask} />
+        </div>
       </main>
     </div>
   );
