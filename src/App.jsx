@@ -16,35 +16,13 @@ const getAllTasksApi = () => {
     });
 };
 
-const getSingleTaskApi = (taskId) => {
-  return axios.get(`${kBaseUrl}/tasks/${taskId}`)
-    .then(response => {
-      return convertFromApi(response.data.task);
-    })
+const toggleIsCompleteApi = (taskId, desiredStatus) => {
+  return axios.patch(`${kBaseUrl}/tasks/${taskId}/mark_${desiredStatus}`)
     .catch(error => {
       console.log(error);
     });
 };
 
-const markTaskCompleteApi = (taskId) => {
-  return axios.patch(`${kBaseUrl}/tasks/${taskId}/mark_complete`)
-    .then(response => {
-      return response.status;
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
-
-const markTaskIncompleteApi = (taskId) => {
-  return axios.patch(`${kBaseUrl}/tasks/${taskId}/mark_incomplete`)
-    .then(response => {
-      return response.status;
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
 
 const deleteTask = (taskId => {
   return axios.delete(`${kBaseUrl}/tasks/${taskId}`)
@@ -82,19 +60,22 @@ const App = () => {
     getAllTasks();
   }, []);
 
-  const toggleTaskComplete = taskId => {
-    return getSingleTaskApi(taskId)
-      .then(singleTask => {
-        const toggleCompletionStatus = singleTask.isComplete ? markTaskIncompleteApi : markTaskCompleteApi;
+  const toggleTaskComplete = (taskId) => {
+    const taskToUpdate = taskData.find(task => task.id === taskId);
 
-        return toggleCompletionStatus(taskId);
-      })
-      .then(() => {
-        return getAllTasks();
-      })
-      .catch(error => {
-        console.log('Failed to toggle completion:', error);
-      });
+    if (!taskToUpdate) return;
+
+    const newStatus = taskToUpdate.isComplete ? 'incomplete' : 'complete';
+    const updatedIsComplete = !taskToUpdate.isComplete;
+
+    setTaskData(tasks =>
+      tasks.map(task =>
+        task.id === taskId ? { ...task, isComplete: updatedIsComplete } : task
+      )
+    );
+
+    // Call the API after state update
+    toggleIsCompleteApi(taskId, newStatus);
   };
 
   const removeTask = (taskId) => {
