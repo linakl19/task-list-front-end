@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import './Task.css';
 
-const Task = ({ id, title, isComplete, onTaskToggle, onTaskDelete }) => {
+const Task = ({ id, title, isComplete, onTaskToggle, onTaskDelete, onTaskCompletionToggle}) => {
   const buttonClass = isComplete ? 'tasks__item__toggle--completed' : '';
 
   return (
@@ -13,10 +13,16 @@ const Task = ({ id, title, isComplete, onTaskToggle, onTaskDelete }) => {
         {title}
       </button>
       <button
+        className="tasks__item__status button"
+        onClick={() => onTaskCompletionToggle(id)}
+      >
+        ✅
+      </button>
+      <button
         className="tasks__item__remove button"
         onClick={()=> onTaskDelete(id)}
       >
-        x
+        ❌
       </button>
     </li>
   );
@@ -28,6 +34,7 @@ Task.propTypes = {
   isComplete: PropTypes.bool.isRequired,
   onTaskToggle: PropTypes.func.isRequired,
   onTaskDelete: PropTypes.func.isRequired,
+  onTaskCompletionToggle: PropTypes.func.isRequired,
 };
 
 export default Task;
