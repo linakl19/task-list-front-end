@@ -101,7 +101,12 @@ const App = () => {
       </header>
       <main>
         <div>
-          <TaskList tasks={taskData} onTaskClick={toggleTaskComplete} onTaskDelete={removeTask} />
+          <TaskList
+            tasks={taskData}
+            onTaskClick={toggleTaskComplete}
+            onTaskCompletionToggle={toggleTaskComplete}
+            onTaskDelete={removeTask}
+          />
           <NewTaskForm onAddTask={addTask} />
         </div>
       </main>
