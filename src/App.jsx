@@ -42,8 +42,8 @@ const addTaskApi = (newTaskData) => {
 };
 
 const convertFromApi = (apiTask => {
-  const { id, goal_id, title, description, is_complete } = apiTask;
-  const newTask = { id, goalId: goal_id, title, description, isComplete: is_complete };
+  const { id, goal_id, title, description, is_complete, completed_at } = apiTask;
+  const newTask = { id, goalId: goal_id, title, description, isComplete: is_complete, completedAt: completed_at };
 
   return newTask;
 });
@@ -67,10 +67,11 @@ const App = () => {
 
     const newStatus = taskToUpdate.isComplete ? 'incomplete' : 'complete';
     const updatedIsComplete = !taskToUpdate.isComplete;
+    const timeOfCompletion = !taskToUpdate.completedAt ? 'In Progress' : new Date();
 
     setTaskData(tasks =>
       tasks.map(task =>
-        task.id === taskId ? { ...task, isComplete: updatedIsComplete } : task
+        task.id === taskId ? { ...task, isComplete: updatedIsComplete, completedAt: timeOfCompletion } : task
       )
     );
 
@@ -103,7 +104,6 @@ const App = () => {
         <div>
           <TaskList
             tasks={taskData}
-            onTaskClick={toggleTaskComplete}
             onTaskCompletionToggle={toggleTaskComplete}
             onTaskDelete={removeTask}
           />
