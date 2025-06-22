@@ -1,0 +1,42 @@
+.tasks__detail__overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure it's on top */
+    }
+
+    .tasks__details {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .task__details--list{
+        padding: 1.5rem;
+        text-align: left;
+    }
+
+    .tasks__details span {
+        font-weight: 700;
+    }
+
+    .tasks__details button{
+        cursor: pointer;
+        transition: all 0.5s ease-in-out;
+        border-bottom: 1px solid black;
+        padding-bottom: 2px;
+    }
+
+    .tasks__details button:hover{
+        transform: scale(1.1);
+        color: red;
+        border-bottom: 1px solid red;
+
+    }
